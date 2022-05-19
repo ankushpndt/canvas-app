@@ -1,6 +1,7 @@
 import "./App.css";
 import Canvas from "./Canvas";
 import React, { useState } from "react";
+
 function App() {
 	const initialShape = [
 		{

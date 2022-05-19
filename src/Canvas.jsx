@@ -1,17 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, memo, useRef } from "react";
 import { Stage, Layer, Image, Text } from "react-konva";
+
 const Canvas = ({ show }) => {
 	const [image, setImage] = useState(new window.Image());
-
 	useEffect(() => {
-		const img = new window.Image();
-		img.src =
-			"https://images.unsplash.com/photo-1531804055935-76f44d7c3621?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80";
-		setImage(img);
+		loadImage();
 	}, []);
 
+	const loadImage = () => {
+		image.src =
+			"https://images.unsplash.com/photo-1531804055935-76f44d7c3621?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80";
+		image.onload = () => {
+			setImage(image);
+		};
+	};
 	//video
-
 	const usePreview = (url) => {
 		const [canvas, setCanvas] = useState(null);
 
@@ -29,7 +32,7 @@ const Canvas = ({ show }) => {
 			};
 			video.addEventListener("canplay", onLoad);
 			return () => video.removeEventListener("load", onLoad);
-		}, []);
+		}, [url]);
 
 		return canvas;
 	};
@@ -45,9 +48,9 @@ const Canvas = ({ show }) => {
 	);
 	useEffect(() => {
 		anim.current = new window.Konva.Animation(() => {
-			image?.current?.image(video?.current);
-		}, image?.current?.getLayer());
-	}, [image]);
+			imageRef?.current?.image(video?.current);
+		}, imageRef?.current?.getLayer());
+	}, [imageRef]);
 	useEffect(() => {
 		if (isPlaying) {
 			video?.current?.play();
@@ -93,8 +96,7 @@ const Canvas = ({ show }) => {
 				<Layer>
 					{show && <Text text="HI" />}
 
-					<Image x={100} y={200} image={image} />
-
+					<Image x={100} y={200} image={image} width={200} height={100} />
 					<Image
 						x={100}
 						y={100}
